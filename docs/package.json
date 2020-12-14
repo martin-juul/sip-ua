@@ -1,0 +1,19 @@
+{
+  "name": "sip-user-agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "authors": {
+    "name": "Martin Juul",
+    "email": "code@juul.xyz"
+  },
+  "repository": "https://github.com/martin-juul/sip-user-agent/sip-user-agent",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}
