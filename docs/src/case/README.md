@@ -94,7 +94,7 @@ aktuelt.
 
 classDiagram
     UserAgent -- UserAgentOptions
-    UserAgent "1" --> "*" Session
+    UserAgent "0" --> "*" Session
     UserAgent *.. MessageParser
     UserAgent *.. MediaHandler
     class UserAgent{
