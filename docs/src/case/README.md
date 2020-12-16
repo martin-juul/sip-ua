@@ -166,7 +166,8 @@ derved kan gøre brugerfladen _reaktionær_.
 
 ```typescript
 interface Identity {
-  // Call ID header or parsed from 'From'|'To' depending on if our side is receiver or sender.
+  // Call ID header or parsed from 'From'|'To'
+  // depending on if our side is receiver or sender.
   friendlyName(): string;
   // raw header
   raw(): string;
