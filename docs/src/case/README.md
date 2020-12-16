@@ -97,10 +97,10 @@ classDiagram
     UserAgent <-- UserAgentOptions
     class UserAgent{
         -Array~Session~ sessions
-        -Boolean connected
-        -Boolean isMuted
-        -Boolean isHeld
-        -Boolean inCall
+        -boolean connected
+        -boolean isMuted
+        -boolean isHeld
+        -boolean inCall
         -MediaStream localMediaStream
         -MediaStream remoteMediaStream
         
@@ -117,8 +117,8 @@ classDiagram
         +mute()
         +unMute()
         +isMuted()
-        +sendDTMF(String tone)
-        +message(String message, String destination)
+        +sendDTMF(tone: string)
+        +message(message: string, destination: string)
         
         +localMediaStream()
         +remoteMediaStream()
@@ -133,13 +133,6 @@ classDiagram
     UserAgentOptions <-- UserAgentDelegate
     class UserAgentDelegate{
         <<Interface>>
-        onMessage(Function callback)
-        onInvite(Function callback)
-        onRefer(Function callback)
-        onRegistered(Function callback)
-        onUnregistered(Function callback)
-        onServerConnect(Function callback)
-        onServerDisconnect(Function callback)
     }
     UserAgent <-- Session
     class Session{
@@ -149,7 +142,7 @@ classDiagram
     Session <-- Message
     class Message{
         <<Abstract>>
-        -Int sequence
+        -number sequence
     }
 ```
 
