@@ -9,6 +9,7 @@
 - [AbstractMessage](#abstractmessage)
 - [Indregistrering](#indregistrering)
 - [Opkald](#opkald)
+  - [Konference](#konference)
 - [Viderestilling](#viderestilling)
   - [Blind](#blind)
   - [Attended](#attended)
@@ -166,6 +167,24 @@ Et interface til at binde callbacks til UserAgent events. Disse
 callbacks er metoderne til at, binde ens brugerflade til klienten - og
 derved kan gøre brugerfladen _reaktionær_.
 
+```mermaid
+%%{init: {'theme':'base', "securityLevel": "loose"}}%%
+
+classDiagram
+    class MessageEvent{
+        <<enumeration>>
+        Ack
+        Bye
+        Cancel
+        Info
+        Invite
+        Message
+        Notify
+        Refer
+        Update
+    }
+```
+
 ```typescript
 interface Identity {
   // Call ID header or parsed from 'From'|'To'
@@ -187,7 +206,7 @@ interface UserAgentDelegate {
   // Called when someone refers a call to us.
   onRefer(referer: Identity, referral: Identity): Promise<boolean>;
   // Allows for hooking into messages.
-  onEvent?(event: string, ...args): void;
+  onEvent?(event: MessageEvent, ...args): void;
   // Called when user makes a call.
   onCallCreated?(): void;
   // Called when user is registered to received calls.
@@ -276,7 +295,9 @@ Message pakker skal du som regel ikke bruge i praksis. Da
 det muligt at hooke ind i dem. F.eks. hvis du skal implementere instant
 chat.
 
-De konkrete klasser er listet her
+
+
+De konkrete klasser er listet her:
 
 | Navn    | Beskrivelse                                                           |
 |:--------|:----------------------------------------------------------------------|
@@ -352,6 +373,28 @@ sequenceDiagram
 __Alice__ `UserAgentDelegate::onCallCreated`
 
 __Bob__ `UserAgentDelegate::onInvite`
+
+### Konference
+
+Et konference kald vil se ud således:
+
+```mermaid
+%%{init: {'theme':'base', "securityLevel": "loose"}}%%
+
+sequenceDiagram
+    Alice-->Bob: INVITE
+    Alice-->Bob: 183 Session Progress
+    Alice->>+Bob: 100 Trying
+    note right of Bob: Ringing
+    Bob-->>-Alice: ACK
+    Bob-->>John: Want to join the meeting?
+    Bob-x John: Sure
+    Bob-->Alice: Please Invite John
+    Alice->>+John: INVITE
+    note right of John: (183 & 100)
+    John->>-Alice: ACK
+    Note left of Alice: Conference started
+````
 
 ## Viderestilling
 
