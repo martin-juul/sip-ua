@@ -7,6 +7,7 @@
   - [UserAgent](#useragent)
   - [UserAgentDelegate](#useragentdelegate)
   - [UserAgentDelegate - Eksempel](#useragentdelegate---eksempel)
+- [Session](#session)
 - [Flows](#flows)
   - [Indregistrering](#indregistrering)
   - [Voice opkald](#voice-opkald)
@@ -210,7 +211,7 @@ const delegate: UserAgentDelegate = {
 }
 ```
 
-#### Session
+## Session
 
 En UserAgent kan have flere opkald igang. Derfor er sessions gemt på
 `UserAgent` som et array.
