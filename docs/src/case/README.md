@@ -97,6 +97,10 @@ classDiagram
     UserAgent <-- UserAgentOptions
     class UserAgent{
         -Array~Session~ sessions
+        -Boolean connected
+        -Boolean isMuted
+        -Boolean isHeld
+        -Boolean inCall
         -MediaStream localMediaStream
         -MediaStream remoteMediaStream
         
@@ -104,6 +108,18 @@ classDiagram
 
         +connect()
         +disconnect()
+        +isConnected()
+        +answer()
+        +hangup()
+        +hold()
+        +unhold()
+        +isHeld()
+        +mute()
+        +unMute()
+        +isMuted()
+        +sendDTMF(String tone)
+        +message(String message, String destination)
+        
         +localMediaStream()
         +remoteMediaStream()
     }
@@ -158,6 +174,7 @@ interface Identity {
 
 interface Invite {
   sender: Identity;
+  withoutSdp: boolean;
 }
 
 interface UserAgentDelegate {
