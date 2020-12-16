@@ -4,5 +4,48 @@
  * ref：https://v1.vuepress.vuejs.org/config/#index-styl
  */
 
-.home .hero img
-  max-width 450px!important
+svg {
+  max-width 100% !important;
+}
+
+.cardinality > text {
+  font-size: 8px !important;
+}
+
+.theme-default-content:not(.custom) {
+  max-width: 70% !important;
+}
+
+.language-typescript, .language-http {
+  max-width: 740px !important;
+}
+
+.sidebar {
+  width: 12rem !important;
+}
+
+@media print {
+  .navbar {
+    display: none;
+  }
+
+  .sidebar-mask, aside.sidebar {
+    display: none;
+  }
+
+  main.page, .theme-default-content:not(.custom) {
+    padding: unset !important;
+  }
+
+  .theme-default-content:not(.custom) {
+    max-width: unset;
+  }
+
+  h2 {
+    page-break-before always;
+  }
+
+  p {
+    font-size: 14px;
+  }
+}

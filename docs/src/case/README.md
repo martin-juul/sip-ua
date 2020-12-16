@@ -1,17 +1,17 @@
 [TOC]: #
 
-# SIP User Agent
-
+# Table of Contents
 - [SIP](#sip)
-- [Opsætning](#opsætning)
-  - [UserAgent](#useragent)
+- [UserAgent](#useragent)
   - [UserAgentDelegate](#useragentdelegate)
   - [UserAgentDelegate - Eksempel](#useragentdelegate---eksempel)
 - [Session](#session)
-- [Flows](#flows)
-  - [Indregistrering](#indregistrering)
-  - [Voice opkald](#voice-opkald)
-  - [Viderestilling](#viderestilling)
+- [AbstractMessage](#abstractmessage)
+- [Indregistrering](#indregistrering)
+- [Opkald](#opkald)
+- [Viderestilling](#viderestilling)
+  - [Blind](#blind)
+  - [Attended](#attended)
 
 
 Når man skal facilitere et VOIP __(Voice Over IP)__ opkald forgår det
@@ -55,8 +55,8 @@ To: <sip:bob@192.168.20.20>
 From: <sip:alice@192.168.20.19>;tag=itp46o81e5
 Call-ID: Alice
 CSeq: 2 REGISTER
-Authorization: Digest algorithm=MD5, username="", realm="", nonce="", uri="sip:hostname", response="", opaque="", qop=auth, cnonce="", nc=00000001
-Contact: <sip:alice@192.168.20.19;transport=ws>;+sip.ice;reg-id=1;+sip.instance="<urn:uuid:5d60af5f-d4dd-4336-876c-a8dc92415a74>";expires=600
+Authorization: Digest algorithm=MD5, ...
+Contact: <sip:alice@192.168.20.19;transport=ws>;...;expires=600
 Expires: 600
 Allow: INVITE,ACK,CANCEL,BYE,UPDATE,MESSAGE,OPTIONS,REFER,INFO,NOTIFY
 Supported: path,gruu,outbound
@@ -75,7 +75,7 @@ __SKAL__ understøtte dette, da man ellers har en ødelagt implementation.
 Vigtigst er at man inkrementere id´et med n+1. Man starter typisk fra
 __1__, men dette er ikke så vigtigt.
 
-## Opsætning
+## UserAgent
 
 En bruger af dette user agent bibliotek vil blive eksponeret overfor en
 `UserAgent` klasse, der under alle omstændigheder skal anvendes som
@@ -89,27 +89,34 @@ routing tabeller. Men dette er ude af scopet for dette projekt. Dog vil
 jeg henvise til [Asterisk](https://www.asterisk.org/) skulle det blive
 aktuelt.
 
-### UserAgent
-
 ```mermaid
 %%{init: {'theme':'base', "securityLevel": "loose"}}%%
 
 classDiagram
-    UserAgent <-- UserAgentOptions
+    UserAgent -- UserAgentOptions
+    UserAgent "1" --> "*" Session
+    UserAgent *.. MessageParser
+    UserAgent *.. MediaHandler
     class UserAgent{
-        -Array~Session~ sessions
-        -boolean connected
-        -boolean isMuted
-        -boolean isHeld
-        -boolean inCall
-        -MediaStream localMediaStream
-        -MediaStream remoteMediaStream
+        +MediaHandler mediaHandler
+        ~WeakMap~Session~ sessions
+        ~boolean connected
         
         +constructor(options: UserAgentOptions)
 
         +connect()
         +disconnect()
         +isConnected()
+        
+        -onSession(peerConnection)
+    }
+    class MediaHandler{
+        ~boolean isMuted
+        ~boolean isHeld
+        ~boolean inCall
+        ~MediaStream localMediaStream
+        ~MediaStream remoteMediaStream
+
         +answer()
         +hangup()
         +hold()
@@ -126,37 +133,38 @@ classDiagram
     }
     class UserAgentOptions{
         <<Interface>>
-        url: string
         username: string
-        password: string
         delegate: UserAgentDelegate
+        url?: string
+        password?: string
     }
     UserAgentOptions <-- UserAgentDelegate
     class UserAgentDelegate{
         <<Interface>>
     }
-    UserAgent <-- Session
     class Session{
         <<Abstract>>
-        -Array~Message~ messages
+        ~WeakMap~AbstractMessage~ messages
     }
-    Session <-- Message
-    class Message{
+    Session <-- AbstractMessage
+    class AbstractMessage{
         <<Abstract>>
-        -number sequence
+        ~number sequence
+    }
+    class MessageParser{
+        <<Interface>>
+        +Message parse(str)
     }
 ```
 
 En factory funktion ville her være fordelagtigt til instantiering af
 `UserAgent`. Denne kan så bindes til en dependency container.
 
-#### UserAgentDelegate
+### UserAgentDelegate
 
 Et interface til at binde callbacks til UserAgent events. Disse
 callbacks er metoderne til at, binde ens brugerflade til klienten - og
 derved kan gøre brugerfladen _reaktionær_.
-
-#### UserAgentDelegate - Eksempel
 
 ```typescript
 interface Identity {
@@ -174,59 +182,52 @@ interface Invite {
 
 interface UserAgentDelegate {
   onMessage(message: string, sender: Identity): void;
-  // return true to accept or false to decline
+  // Return true to accept or false to decline
   onInvite(invite: Invite): Promise<boolean>;
-  // called when someone refers a call to us.
+  // Called when someone refers a call to us.
   onRefer(referer: Identity, referral: Identity): Promise<boolean>;
+  // Allows for hooking into messages.
+  onEvent?(event: string, ...args): void;
+  // Called when user makes a call.
+  onCallCreated?(): void;
   // Called when user is registered to received calls.
-  onRegistered(): void;
+  onRegistered?(): void;
   // Called when user is no longer registered to received calls.
-  onUnregistered(): void;
+  onUnregistered?(): void;
   // Called when user is connected to server.
-  onServerConnect();
+  onServerConnect?();
   // Called when user is no longer connected.
   // @param error - An Error if server caused the disconnect. Otherwise undefined.
-  onServerDisconnect(error?: Error): void;
+  onServerDisconnect?(error?: Error): void;
 }
+```
 
+### UserAgentDelegate - Eksempel
+
+```typescript
 const delegate: UserAgentDelegate = {
   onMessage(message: string, sender: Identity) {
     console.log(`Received message from: ${sender.friendlyName()}`, message)
   },
-  onInvite(invite: Invite) {
-    return new Promise<boolean>(resolve => {
-      console.log(`Received invite from ${invite.sender.friendlyName()}`);
-      resolve(true); // accept
-    })
+  async onInvite(invite: Invite) {
+    console.log(`Received invite from ${invite.sender.friendlyName()}`);
+    return true; // accept
   },
-  onRefer(referer: Identity, referral: Identity) {
-    return new Promise<boolean>(resolve => {
-      console.log(`Received refer from ${referer.friendlyName()} to ${referral.friendlyName()}`);
-      resolve(true); // accept
-    })
+  async onRefer(referer: Identity, referral: Identity) {
+    console.log(
+      `Received refer from ${referer.friendlyName()} to ${referral.friendlyName()}`
+    );
+    return true; // accept
   },
-  onRegistered() {
-    console.log('registered');
-  },
-  onUnregistered() {
-    console.log('unregistered');
-  },
-  onServerConnect() {
-    console.log('connected');
-  },
-  onServerDisconnect(error?:Error) {
-    if (error) {
-      console.error(error);
-    }
-    console.log('disconnected');
-  }
 }
+
+const ua = new UserAgent({ url, username, password, delegate });
 ```
 
 ## Session
 
 En UserAgent kan have flere opkald igang. Derfor er sessions gemt på
-`UserAgent` som et array.
+`UserAgent` som et WeakMap.
 
 I tilfælde af flere opkald, vil det aktive opkald være dét som brugeren
 er forbundet til. De andre vil være på `Hold`.
@@ -251,9 +252,45 @@ classDiagram
     }
 ```
 
-## Flows
+En session afvikles typisk således:
 
-### Indregistrering
+```mermaid
+%%{init: {'theme':'base', "securityLevel": "loose"}}%%
+
+stateDiagram-v2
+    [*] --> Standby
+    Standby --> Bye
+    Standby --> Invite
+
+    Invite --> Ack
+    Ack --> Negotiation
+    Negotiation --> Bye
+    Bye --> Standby
+    Bye --> [*]
+```
+
+## AbstractMessage
+
+Message pakker skal du som regel ikke bruge i praksis. Da
+[UserAgentDelegate](#useragentdelegate), vil dække 99% use-cases. Dog er
+det muligt at hooke ind i dem. F.eks. hvis du skal implementere instant
+chat.
+
+De konkrete klasser er listet her
+
+| Navn    | Beskrivelse                                                           |
+|:--------|:----------------------------------------------------------------------|
+| Ack     | Acknowledge                                                           |
+| Bye     | Afsluttet opkald                                                      |
+| Cancel  | Afbryd opkald                                                         |
+| Info    | Applikations nieaveu information. Normalvis relateret til en session. |
+| Invite  | Indgående opkald                                                      |
+| Message | Indgående Tekst besked                                                |
+| Notify  | Ændring af session                                                    |
+| Refer   | Omstilling                                                            |
+| Update  | Ændring af medie stream                                               |
+
+## Indregistrering
 
 Biblioteket bruger en pinkode som kodeord, når _Alice_ vil snakke med
 _Bob_, uden en server i mellem. Aftaler hun at bruge koden __1234__ som
@@ -285,7 +322,11 @@ tilfælde.
     Bob-->>Alice: 200
 ```
 
-### Voice opkald
+[UserAgentDelegate](#useragentdelegate)
+
+`UserAgentDelegate::onRegistered`
+
+## Opkald
 
 ```mermaid
 %%{init: {'theme':'base', "securityLevel": "loose"}}%%
@@ -306,7 +347,13 @@ sequenceDiagram
     A->>B: ACK
 ```
 
-### Viderestilling
+[UserAgentDelegate](#useragentdelegate)
+
+__Alice__ `UserAgentDelegate::onCallCreated`
+
+__Bob__ `UserAgentDelegate::onInvite`
+
+## Viderestilling
 
 Når man viderestiller et opkald, er der 2 måder at gøre det på.
 
@@ -336,4 +383,10 @@ graph TD
     Invite   --> |"Bob answers"|Answer
     Answer   --> Refer
 ```
+
+[UserAgentDelegate](#useragentdelegate)
+
+__Alice__ `UserAgentDelegate::onCallCreated`
+
+__Bob__ `UserAgentDelegate::onRefer`
 

@@ -1,5 +1,3 @@
-const {description} = require('../../package');
-
 module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#title
@@ -8,7 +6,7 @@ module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
-  description: description,
+  description: 'Documentation exercise',
 
   base: '/sip-ua/',
 
