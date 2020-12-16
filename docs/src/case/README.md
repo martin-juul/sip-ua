@@ -47,16 +47,16 @@ SIP er en plain text protokol. I eksemplet herunder, er vist en
 __REGISTER__ pakke. Her er også implementeret authorization og
 kommunikationen er over WebSocket med TLS.
 
-```
+```http request
 REGISTER sip:remotehost SIP/2.0
 Via: SIP/2.0/WSS 3af6pj3a8fk4.invalid;branch=z9hG4bK4997110
 Max-Forwards: 69
-To: <sip:user@remotehost>
-From: <sip:user@hostname>;tag=itp46o81e5
-Call-ID: rtu3selc7ej75lqs5alarg
+To: <sip:bob@192.168.20.20>
+From: <sip:alice@192.168.20.19>;tag=itp46o81e5
+Call-ID: Alice
 CSeq: 2 REGISTER
 Authorization: Digest algorithm=MD5, username="", realm="", nonce="", uri="sip:hostname", response="", opaque="", qop=auth, cnonce="", nc=00000001
-Contact: <sip:ukgem3ok@3af6pj3a8fk4.invalid;transport=ws>;+sip.ice;reg-id=1;+sip.instance="<urn:uuid:5d60af5f-d4dd-4336-876c-a8dc92415a74>";expires=600
+Contact: <sip:alice@192.168.20.19;transport=ws>;+sip.ice;reg-id=1;+sip.instance="<urn:uuid:5d60af5f-d4dd-4336-876c-a8dc92415a74>";expires=600
 Expires: 600
 Allow: INVITE,ACK,CANCEL,BYE,UPDATE,MESSAGE,OPTIONS,REFER,INFO,NOTIFY
 Supported: path,gruu,outbound

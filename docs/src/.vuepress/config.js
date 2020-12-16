@@ -1,4 +1,4 @@
-const { description } = require('../../package')
+const {description} = require('../../package');
 
 module.exports = {
   /**
@@ -18,9 +18,9 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/config/#head
    */
   head: [
-    ['meta', { name: 'theme-color', content: '#3eaf7c' }],
-    ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
-    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }]
+    ['meta', {name: 'theme-color', content: '#3eaf7c'}],
+    ['meta', {name: 'apple-mobile-web-app-capable', content: 'yes'}],
+    ['meta', {name: 'apple-mobile-web-app-status-bar-style', content: 'black'}],
   ],
 
   /**
@@ -29,6 +29,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
+    search: false,
     lastUpdated: false,
     nav: [
       {
@@ -43,14 +44,14 @@ module.exports = {
           collapsable: false,
           children: [
             '',
-          ]
-        }
+          ],
+        },
       ],
-    }
+    },
   },
 
   /**
-   * Apply plugins，ref：https://v1.vuepress.vuejs.org/zh/plugin/
+   * Apply plugins，ref：https://v1.vuepress.vuejs.org/plugin/
    */
   plugins: [
     '@vuepress/plugin-back-to-top',
@@ -61,4 +62,4 @@ module.exports = {
   // This will disable ES5 transpilation and polyfills for IE,
   // and result in faster builds and smaller files.
   evergreen: true,
-}
+};
