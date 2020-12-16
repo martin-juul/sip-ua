@@ -1,8 +1,10 @@
 {
   "name": "sip-user-agent",
   "version": "1.0.0",
+  "desciption": "Simple case for SIP over WebSocket",
   "description": "",
   "main": "index.js",
+  "private": true,
   "authors": {
     "name": "Martin Juul",
     "email": "code@juul.xyz"
@@ -14,6 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "vuepress": "^1.5.3"
+    "vuepress": "^1.5.3",
+    "vuepress-plugin-mermaidjs": "^1.8.1"
   }
 }

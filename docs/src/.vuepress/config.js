@@ -55,6 +55,7 @@ module.exports = {
   plugins: [
     '@vuepress/plugin-back-to-top',
     '@vuepress/plugin-medium-zoom',
+    'vuepress-plugin-mermaidjs',
   ],
 
   // This will disable ES5 transpilation and polyfills for IE,
