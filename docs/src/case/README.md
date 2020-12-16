@@ -310,6 +310,17 @@ sequenceDiagram
 
 Når man viderestiller et opkald, er der 2 måder at gøre det på.
 
+### Blind
+
+Ved en blind omstilling, tjekker man ikke om modparten rent faktisk er klar til at modtage opkaldet.
+Derimod så sender man bare opkaldet videre, og så bliver der lagt på.
+
+### Attended
+
+Ved en Attended omstilling, ringer man modparten op og venter på svar. Her kan man snakke sammen,
+og forklare hvorfor man omstiller - uden at personen der skal omstilles kan gøre med. Derved slipper en eventuel kunde for,
+at beskrive sit problem igen.
+
 ```mermaid
 %%{init: {'theme':'base', "securityLevel": "loose"}}%%
 
@@ -323,14 +334,3 @@ graph TD
     Invite   --> |"Bob answers"|Answer
     Answer   --> Refer
 ```
-
-### Blind
-
-Ved en blind omstilling, tjekker man ikke om modparten rent faktisk er klar til at modtage opkaldet.
-Derimod så sender man bare opkaldet videre, og så bliver der lagt på.
-
-### Attended
-
-Ved en Attended omstilling, ringer man modparten op og venter på svar. Her kan man snakke sammen,
-og forklare hvorfor man omstiller - uden at personen der skal omstilles kan gøre med. Derved slipper en eventuel kunde for,
-at beskrive sit problem igen.
