@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SIP User Agent</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    
+    <meta name="description" content="Documentation exercise">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <link rel="preload" href="/sip-ua/assets/css/0.styles.1df20589.css" as="style"><link rel="preload" href="/sip-ua/assets/js/app.2d0909e5.js" as="script"><link rel="preload" href="/sip-ua/assets/js/2.51686b66.js" as="script"><link rel="preload" href="/sip-ua/assets/js/7.d77b9b7a.js" as="script"><link rel="prefetch" href="/sip-ua/assets/js/3.175803c4.js"><link rel="prefetch" href="/sip-ua/assets/js/4.ff8ae204.js"><link rel="prefetch" href="/sip-ua/assets/js/5.64a23638.js"><link rel="prefetch" href="/sip-ua/assets/js/6.b2af1aa2.js"><link rel="prefetch" href="/sip-ua/assets/js/8.e8a0ca36.js"><link rel="prefetch" href="/sip-ua/assets/js/9.95d12cc6.js">
+    <link rel="stylesheet" href="/sip-ua/assets/css/0.styles.1df20589.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/sip-ua/" class="home-link router-link-active"><!----> <span class="site-name">SIP User Agent</span></a> <div class="links"><!----> <nav class="nav-links can-hide"><div class="nav-item"><a href="/sip-ua/case/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Case
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/sip-ua/case/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Case
+</a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Case</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/sip-ua/case/" aria-current="page" class="active sidebar-link">/case/</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/sip-ua/case/#sip" class="sidebar-link">SIP</a></li><li class="sidebar-sub-header"><a href="/sip-ua/case/#useragent" class="sidebar-link">UserAgent</a></li><li class="sidebar-sub-header"><a href="/sip-ua/case/#session" class="sidebar-link">Session</a></li><li class="sidebar-sub-header"><a href="/sip-ua/case/#abstractmessage" class="sidebar-link">AbstractMessage</a></li><li class="sidebar-sub-header"><a href="/sip-ua/case/#indregistrering" class="sidebar-link">Indregistrering</a></li><li class="sidebar-sub-header"><a href="/sip-ua/case/#opkald" class="sidebar-link">Opkald</a></li><li class="sidebar-sub-header"><a href="/sip-ua/case/#viderestilling" class="sidebar-link">Viderestilling</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="table-of-contents"><a href="#table-of-contents" class="header-anchor">#</a> Table of Contents</h1> <ul><li><a href="#sip">SIP</a></li> <li><a href="#useragent">UserAgent</a> <ul><li><a href="#useragentdelegate">UserAgentDelegate</a></li> <li><a href="#useragentdelegate---eksempel">UserAgentDelegate - Eksempel</a></li></ul></li> <li><a href="#session">Session</a></li> <li><a href="#abstractmessage">AbstractMessage</a></li> <li><a href="#indregistrering">Indregistrering</a></li> <li><a href="#opkald">Opkald</a> <ul><li><a href="#konference">Konference</a></li></ul></li> <li><a href="#viderestilling">Viderestilling</a> <ul><li><a href="#blind">Blind</a></li> <li><a href="#attended">Attended</a></li></ul></li></ul> <p>Når man skal facilitere et VOIP <strong>(Voice Over IP)</strong> opkald forgår det
+typisk via SIP <strong>(Session Initiation Protocol)</strong> som er en
+signaleringsprotokol, også kendt som application-layer control. SIP
+bruger flere transport protokoller som TCP, UDP, SCTCP, RSVP m.fl.</p> <p>En SIP User Agent har til opgave at oprette, modificere og afslutte
+sessioner. Disse sessioner inkluderer IP Telefoni, multimedie
+distribution og multimedie konferencer.</p> <p>En user agent vil typisk forbinde til en dedikeret server, der kan
+håndtere transcoding af mediet. Men da standarden også tillader to
+klienter at snakke sammen, dvs. at de både agere klient og server, vil
+løsningen fokusere på dette scenarie for at simplificere projektet.</p> <p>Teoretisk tillader dette også langt højere kvalitet, da en typisk
+telefonsamtale har 64 kbit til rådighed <em>(PCMA/G.711)</em>.</p> <p>Når de to klienter vil oprette forbindelse mellem hinanden, kommunikere
+de hvilke funktionaliteter de understøtter (voice, video). Samt codecs
+og bitrates.</p> <p>For at starte et opkald vil den ene sende en <strong>Invite</strong> besked til den
+anden, med disse informationer. Når den modsatte part acceptere, skal
+klienterne blive enige om hvordan de kommunikere.</p> <p>Dette foregår via princippet at højeste fællesnævner bestemmer.</p> <h2 id="sip"><a href="#sip" class="header-anchor">#</a> SIP</h2> <p>SIP er en plain text protokol. I eksemplet herunder, er vist en
+<strong>REGISTER</strong> pakke. Her er også implementeret authorization og
+kommunikationen er over WebSocket med TLS.</p> <div class="language-http request extra-class"><pre class="language-http"><code>REGISTER sip:remotehost SIP/2.0
+<span class="token header-name keyword">Via:</span> SIP/2.0/WSS 3af6pj3a8fk4.invalid;branch=z9hG4bK4997110
+<span class="token header-name keyword">Max-Forwards:</span> 69
+<span class="token header-name keyword">To:</span> &lt;sip:bob@192.168.20.20&gt;
+<span class="token header-name keyword">From:</span> &lt;sip:alice@192.168.20.19&gt;;tag=itp46o81e5
+<span class="token header-name keyword">Call-ID:</span> Alice
+<span class="token header-name keyword">CSeq:</span> 2 REGISTER
+<span class="token header-name keyword">Authorization:</span> Digest algorithm=MD5, ...
+<span class="token header-name keyword">Contact:</span> &lt;sip:alice@192.168.20.19;transport=ws&gt;;...;expires=600
+<span class="token header-name keyword">Expires:</span> 600
+<span class="token header-name keyword">Allow:</span> INVITE,ACK,CANCEL,BYE,UPDATE,MESSAGE,OPTIONS,REFER,INFO,NOTIFY
+<span class="token header-name keyword">Supported:</span> path,gruu,outbound
+<span class="token header-name keyword">User-Agent:</span> sip-ua
+<span class="token header-name keyword">Content-Length:</span> 0
+</code></pre></div><p>Meget af den viden man har fra HTTP 1.1 kan man genbruge i SIP land.
+<strong>Allow</strong> kan f.eks. sammenlignes med med CORS headeren
+<strong>Access-Control-Allow-Methods</strong>.</p> <p>Det specielle ved SIP er at alle beskeder indeholder en <strong>CSeq</strong> header
+med en metode og et sekvens id angivet i <code>integer</code>. Protokollen tillader
+nemlig <em>Out of Order</em> pakker. En user agent og tilsvarende server,
+<strong>SKAL</strong> understøtte dette, da man ellers har en ødelagt implementation.
+Vigtigst er at man inkrementere id´et med n+1. Man starter typisk fra
+<strong>1</strong>, men dette er ikke så vigtigt.</p> <h2 id="useragent"><a href="#useragent" class="header-anchor">#</a> UserAgent</h2> <p>En bruger af dette user agent bibliotek vil blive eksponeret overfor en
+<code>UserAgent</code> klasse, der under alle omstændigheder skal anvendes som
+<code>Singleton</code>. Grunden til dette er, at det for det første ikke giver
+mening at have flere <em>&quot;telefoner&quot;</em> i et browser vindue. Men også fordi i
+tilfælde af flere opkald, vil det blive alt for uoverskueligt at
+programmere routingen af opkald.</p> <p>I disse tilfælde skal man bruge en PBX server, hvor man konfigurere
+routing tabeller. Men dette er ude af scopet for dette projekt. Dog vil
+jeg henvise til <a href="https://www.asterisk.org/" target="_blank" rel="noopener noreferrer">Asterisk<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> skulle det blive
+aktuelt.</p> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><p>En factory funktion ville her være fordelagtigt til instantiering af
+<code>UserAgent</code>. Denne kan så bindes til en dependency container.</p> <h3 id="useragentdelegate"><a href="#useragentdelegate" class="header-anchor">#</a> UserAgentDelegate</h3> <p>Et interface til at binde callbacks til UserAgent events. Disse
+callbacks er metoderne til at, binde ens brugerflade til klienten - og
+derved kan gøre brugerfladen <em>reaktionær</em>.</p> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">interface</span> <span class="token class-name">Identity</span> <span class="token punctuation">{</span>
+  <span class="token comment">// Call ID header or parsed from 'From'|'To'</span>
+  <span class="token comment">// depending on if our side is receiver or sender.</span>
+  <span class="token function">friendlyName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">// raw header</span>
+  <span class="token function">raw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Invite</span> <span class="token punctuation">{</span>
+  sender<span class="token operator">:</span> Identity<span class="token punctuation">;</span>
+  withoutSdp<span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">UserAgentDelegate</span> <span class="token punctuation">{</span>
+  <span class="token function">onMessage</span><span class="token punctuation">(</span>message<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> sender<span class="token operator">:</span> Identity<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token comment">// Return true to accept or false to decline</span>
+  <span class="token function">onInvite</span><span class="token punctuation">(</span>invite<span class="token operator">:</span> Invite<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">boolean</span><span class="token operator">&gt;</span><span class="token punctuation">;</span>
+  <span class="token comment">// Called when someone refers a call to us.</span>
+  <span class="token function">onRefer</span><span class="token punctuation">(</span>referer<span class="token operator">:</span> Identity<span class="token punctuation">,</span> referral<span class="token operator">:</span> Identity<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">boolean</span><span class="token operator">&gt;</span><span class="token punctuation">;</span>
+  <span class="token comment">// Allows for hooking into messages.</span>
+  onEvent<span class="token operator">?</span><span class="token punctuation">(</span>event<span class="token operator">:</span> MessageEvent<span class="token punctuation">,</span> <span class="token operator">...</span>args<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token comment">// Called when user makes a call.</span>
+  onCallCreated<span class="token operator">?</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token comment">// Called when user is registered to received calls.</span>
+  onRegistered<span class="token operator">?</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token comment">// Called when user is no longer registered to received calls.</span>
+  onUnregistered<span class="token operator">?</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token comment">// Called when user is connected to server.</span>
+  onServerConnect<span class="token operator">?</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// Called when user is no longer connected.</span>
+  <span class="token comment">// @param error - An Error if server caused the disconnect. Otherwise undefined.</span>
+  onServerDisconnect<span class="token operator">?</span><span class="token punctuation">(</span>error<span class="token operator">?</span><span class="token operator">:</span> Error<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="useragentdelegate-eksempel"><a href="#useragentdelegate-eksempel" class="header-anchor">#</a> UserAgentDelegate - Eksempel</h3> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> delegate<span class="token operator">:</span> UserAgentDelegate <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">onMessage</span><span class="token punctuation">(</span>message<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> sender<span class="token operator">:</span> Identity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Received message from: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>sender<span class="token punctuation">.</span><span class="token function">friendlyName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> message<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token keyword">async</span> <span class="token function">onInvite</span><span class="token punctuation">(</span>invite<span class="token operator">:</span> Invite<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Received invite from </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>invite<span class="token punctuation">.</span>sender<span class="token punctuation">.</span><span class="token function">friendlyName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token comment">// accept</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token keyword">async</span> <span class="token function">onRefer</span><span class="token punctuation">(</span>referer<span class="token operator">:</span> Identity<span class="token punctuation">,</span> referral<span class="token operator">:</span> Identity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>
+      <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Received refer from </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>referer<span class="token punctuation">.</span><span class="token function">friendlyName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> to </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>referral<span class="token punctuation">.</span><span class="token function">friendlyName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token comment">// accept</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> ua <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UserAgent</span><span class="token punctuation">(</span><span class="token punctuation">{</span> url<span class="token punctuation">,</span> username<span class="token punctuation">,</span> password<span class="token punctuation">,</span> delegate <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="session"><a href="#session" class="header-anchor">#</a> Session</h2> <p>En UserAgent kan have flere opkald igang. Derfor er sessions gemt på
+<code>UserAgent</code> som et WeakMap.</p> <p>I tilfælde af flere opkald, vil det aktive opkald være dét som brugeren
+er forbundet til. De andre vil være på <code>Hold</code>.</p> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><p>En session afvikles typisk således:</p> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><h2 id="abstractmessage"><a href="#abstractmessage" class="header-anchor">#</a> AbstractMessage</h2> <p>Message pakker skal du som regel ikke bruge i praksis. Da
+<a href="#useragentdelegate">UserAgentDelegate</a>, vil dække 99% use-cases. Dog er
+det muligt at hooke ind i dem. F.eks. hvis du skal implementere instant
+chat.</p> <p>De konkrete klasser er listet her:</p> <table><thead><tr><th style="text-align:left;">Navn</th> <th style="text-align:left;">Beskrivelse</th></tr></thead> <tbody><tr><td style="text-align:left;">Ack</td> <td style="text-align:left;">Acknowledge</td></tr> <tr><td style="text-align:left;">Bye</td> <td style="text-align:left;">Afsluttet opkald</td></tr> <tr><td style="text-align:left;">Cancel</td> <td style="text-align:left;">Afbryd opkald</td></tr> <tr><td style="text-align:left;">Info</td> <td style="text-align:left;">Applikations nieaveu information. Normalvis relateret til en session.</td></tr> <tr><td style="text-align:left;">Invite</td> <td style="text-align:left;">Indgående opkald</td></tr> <tr><td style="text-align:left;">Message</td> <td style="text-align:left;">Indgående Tekst besked</td></tr> <tr><td style="text-align:left;">Notify</td> <td style="text-align:left;">Ændring af session</td></tr> <tr><td style="text-align:left;">Refer</td> <td style="text-align:left;">Omstilling</td></tr> <tr><td style="text-align:left;">Update</td> <td style="text-align:left;">Ændring af medie stream</td></tr></tbody></table> <h2 id="indregistrering"><a href="#indregistrering" class="header-anchor">#</a> Indregistrering</h2> <p>Biblioteket bruger en pinkode som kodeord, når <em>Alice</em> vil snakke med
+<em>Bob</em>, uden en server i mellem. Aftaler hun at bruge koden <strong>1234</strong> som
+<code>password</code>.</p> <p>En SIP <code>REGISTER</code> <strong>SKAL</strong> altid først sendes uden password. Når den
+bliver afvist med status <strong>401</strong>, så aftaler klienterne en <code>nonce</code> - som
+bliver inkluderet i næste <code>REGISTER</code> forsøg. Inklusiv kodeordet.</p> <p><code>nonce</code> bliver genereret af <em>Bob</em> og sendt til <em>Alice</em>. Dette er en
+<code>Password-Challenge</code> Når <em>Alice</em> så indregistrere igen, så ved <em>Bob</em> at,
+det er samme <em>Alice</em> han snakker med - da kun hun vil kende til den
+værdi.</p> <p>Den underlæggende implementation er håndteret af biblioteket. Som bruger
+vil dette være gemt under abstraktionen, men det vil dog være en fordel
+at have en forståelse af hvordan dette fungerer. Specielt i debug
+tilfælde.</p> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><p><a href="#useragentdelegate">UserAgentDelegate</a></p> <p><code>UserAgentDelegate::onRegistered</code></p> <h2 id="opkald"><a href="#opkald" class="header-anchor">#</a> Opkald</h2> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><p><a href="#useragentdelegate">UserAgentDelegate</a></p> <p><strong>Alice</strong> <code>UserAgentDelegate::onCallCreated</code></p> <p><strong>Bob</strong> <code>UserAgentDelegate::onInvite</code></p> <h3 id="konference"><a href="#konference" class="header-anchor">#</a> Konference</h3> <p>Et konference kald vil se ud således:</p> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><h2 id="viderestilling"><a href="#viderestilling" class="header-anchor">#</a> Viderestilling</h2> <p>Når man viderestiller et opkald, er der 2 måder at gøre det på.</p> <h3 id="blind"><a href="#blind" class="header-anchor">#</a> Blind</h3> <p>Ved en blind omstilling, tjekker man ikke om modparten rent faktisk er
+klar til at modtage opkaldet. Derimod så sender man bare opkaldet
+videre, og så bliver der lagt på.</p> <h3 id="attended"><a href="#attended" class="header-anchor">#</a> Attended</h3> <p>Ved en Attended omstilling, ringer man modparten op og venter på svar.
+Her kan man snakke sammen, og forklare hvorfor man omstiller - uden at
+personen der skal omstilles kan gøre med. Derved slipper en eventuel
+kunde for, at beskrive sit problem igen.</p> <div class="spinner" style="background:rgb(66, 185, 131);" data-v-1bbcb91a></div><p><a href="#useragentdelegate">UserAgentDelegate</a></p> <p><strong>Alice</strong> <code>UserAgentDelegate::onCallCreated</code></p> <p><strong>Bob</strong> <code>UserAgentDelegate::onRefer</code></p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/sip-ua/assets/js/app.2d0909e5.js" defer></script><script src="/sip-ua/assets/js/2.51686b66.js" defer></script><script src="/sip-ua/assets/js/7.d77b9b7a.js" defer></script>
+  </body>
+</html>
